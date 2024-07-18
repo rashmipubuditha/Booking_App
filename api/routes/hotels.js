@@ -1,30 +1,24 @@
 import express from "express"
 import Hotel  from "../models/Hotel.js";
+import { createError } from "../utils/error.js";
+import { createHotel, deleteHotel, getHotel, getHotels, updateHotel } from "../conrollers/hotel.js";
+import { verifyAdmin } from "../utils/verifyToken.js";
 
 const router = express.Router();
 
-router.get("/",(req,res)=>{
-    res.send("Hello, this is hotels endpoints")
-})
-
 // Create 
-router.post("/", async (req,res)=>{ // router.post("/:id?limit=5"
-const newHotel = new Hotel(req.body)
+router.post("/",verifyAdmin, createHotel);
 
-    try{
-        const saveHotel = await newHotel.save()
-        res.status(200).json(saveHotel)
-    }
-    catch(err){
-        res.status(500).json(err)
-    }
-})
 // Update
+router.put("/:id",verifyAdmin, updateHotel);
+
 // Delete
+router.delete("/:id", verifyAdmin, deleteHotel);
+
 // Get
+router.get("/:id", getHotel);
+
 // Get all
-
-
-
+router.get("/", getHotels);
 
 export default router
